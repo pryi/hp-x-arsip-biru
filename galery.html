@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webku</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #000000;
+            color: white;
+            padding: 10px;
+        }
+        .menu-button {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .menu {
+            display: none;
+            flex-direction: column;
+            background-color: #000000;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a:hover {
+            background-color: #dc222e;
+        }
+        .gallery-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .gallery-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+            color: inherit;
+            width: 70px; /* Adjust width to fit 3 items per row */
+        }
+        .gallery-item img {
+            width: 50px; /* Adjust width to be smaller */
+            height: 50px; /* Adjust height to be smaller */
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <div class="navbar">
+            <span class="menu-button" onclick="toggleMenu()">☰ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WEBKU</span>
+        </div>
+        <div class="menu" id="menu">
+            <a href="webku.html">Home</a>
+            <a href="galery.html">Gelery</a>
+            <a href="login.html">Login</a>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w1.jpg" alt="Image 1">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w3.jpeg" alt="Image 2">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w4.jpeg" alt="Image 3">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w5.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w6.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w7.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w8.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w9.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w10.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w11.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w12.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w13.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w14.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w15.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w16.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w17.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w18.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w19.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w20.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w21.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w22.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="gallery-row">
+            <div class="gallery-item">
+                <img src="img/w23.jpeg" alt="Image 4">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w24.jpeg" alt="Image 5">
+            </div>
+            <div class="gallery-item">
+                <img src="img/w25.jpeg" alt="Image 6">
+            </div>
+        </div>
+        <div class="navigation">
+            <div class="nav-button" onclick="beranda()">⬤</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("menu");
+        if (menu.style.display === "none" || menu.style.display === "") {
+            menu.style.display = "flex";
+        } else {
+            menu.style.display = "none";
+        }
+    }
+    
+</script>
+<script>
+    function beranda(){
+       window.location.href = "index.html";
+   }
+   </script>
+</body>
+</html>

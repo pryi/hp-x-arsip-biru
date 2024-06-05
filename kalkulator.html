@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emulator HP dengan Kalkulator dan Navigasi</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #fff;
+            overflow-y: scroll;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        .screen::-webkit-scrollbar {
+            display: none;  /* Chrome, Safari, Opera */
+        }
+        .calc-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+        .calc-display {
+            width: 100%;
+            background-color: #222;
+            color: #fff;
+            text-align: right;
+            font-size: 2rem;
+            padding: 20px;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+        }
+        .calc-buttons {
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+        .calc-button {
+            width: 100%;
+            padding: 20px;
+            font-size: 1.5rem;
+            background-color: #f9f9f9;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .calc-button.operator {
+            background-color: #ff9500;
+            color: #fff;
+        }
+        .calc-button.double {
+            grid-column: span 2;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <div class="calc-container">
+            <div id="display" class="calc-display">0</div>
+            <div class="calc-buttons">
+                <button class="calc-button double" onclick="clearDisplay()">AC</button>
+                <button class="calc-button" onclick="clearEntry()">C</button>
+                <button class="calc-button operator" onclick="appendOperator('/')">÷</button>
+                <button class="calc-button" onclick="appendNumber(7)">7</button>
+                <button class="calc-button" onclick="appendNumber(8)">8</button>
+                <button class="calc-button" onclick="appendNumber(9)">9</button>
+                <button class="calc-button operator" onclick="appendOperator('*')">×</button>
+                <button class="calc-button" onclick="appendNumber(4)">4</button>
+                <button class="calc-button" onclick="appendNumber(5)">5</button>
+                <button class="calc-button" onclick="appendNumber(6)">6</button>
+                <button class="calc-button operator" onclick="appendOperator('-')">−</button>
+                <button class="calc-button" onclick="appendNumber(1)">1</button>
+                <button class="calc-button" onclick="appendNumber(2)">2</button>
+                <button class="calc-button" onclick="appendNumber(3)">3</button>
+                <button class="calc-button operator" onclick="appendOperator('+')">+</button>
+                <button class="calc-button double" onclick="appendNumber(0)">0</button>
+                <button class="calc-button" onclick="appendDot()">.</button>
+                <button class="calc-button operator" onclick="calculateResult()">=</button>
+            </div>
+        </div>
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+
+<script>
+    let currentInput = '0';
+    let operator = null;
+    let previousInput = null;
+
+    const display = document.getElementById('display');
+
+    function updateDisplay() {
+        display.textContent = currentInput;
+    }
+
+    function clearDisplay() {
+        currentInput = '0';
+        operator = null;
+        previousInput = null;
+        updateDisplay();
+    }
+
+    function clearEntry() {
+        currentInput = '0';
+        updateDisplay();
+    }
+
+    function appendNumber(number) {
+        if (currentInput === '0') {
+            currentInput = String(number);
+        } else {
+            currentInput += String(number);
+        }
+        updateDisplay();
+    }
+
+    function appendDot() {
+        if (!currentInput.includes('.')) {
+            currentInput += '.';
+        }
+        updateDisplay();
+    }
+
+    function appendOperator(op) {
+        if (operator !== null) {
+            calculateResult();
+        }
+        previousInput = currentInput;
+        currentInput = '0';
+        operator = op;
+    }
+
+    function calculateResult() {
+        let result;
+        const prev = parseFloat(previousInput);
+        const curr = parseFloat(currentInput);
+        if (isNaN(prev) || isNaN(curr)) return;
+        switch (operator) {
+            case '+':
+                result = prev + curr;
+                break;
+            case '-':
+                result = prev - curr;
+                break;
+            case '*':
+                result = prev * curr;
+                break;
+            case '/':
+                result = prev / curr;
+                break;
+            default:
+                return;
+        }
+        currentInput = String(result);
+        operator = null;
+        previousInput = null;
+        updateDisplay();
+    }
+    function beranda(){
+       window.location.href = "index.html";
+   }
+</script>
+
+</body>
+</html>

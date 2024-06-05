@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Shooter di HP</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #ffffff;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        canvas {
+            background-color: #000;
+            border: 1px solid #08188f;
+        }
+        .navigation1 {
+            height: 100px;
+            background-color: #000000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button1 {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <canvas id="gameCanvas" width="250" height="350"></canvas>
+        <div id="gameOver">
+            <h2>Game Over</h2>
+            <button onclick="restartGame()">Restart</button>
+        </div>
+    </div>
+    <div class="navigation1">
+        <div class="nav-button1" onclick="moveLeft()">⬅️</div>
+        <div class="nav-button1" onclick="shoot()">🔫</div>
+        <div class="nav-button1" onclick="moveRight()">➡️</div>
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const shipImage = new Image();
+    shipImage.src = 'img/p.png'; // Ubah dengan path gambar pesawat yang benar
+    const obstacleImage = new Image();
+    obstacleImage.src = 'img/m1.png'; // Ubah dengan path gambar rintangan yang benar
+
+    const shipWidth = 45; // Ubah lebar sesuai ukuran gambar pesawat
+    const shipHeight = 50; // Ubah tinggi sesuai ukuran gambar pesawat
+    let ship = {
+        x: canvas.width / 2 - shipWidth / 2,
+        y: canvas.height - shipHeight - 10,
+        width: shipWidth,
+        height: shipHeight,
+        speed: 5
+    };
+
+    let bullets = [];
+    let obstacles = [];
+    const obstacleSpeed = 2;
+    let gameOver = false;
+
+    function drawShip() {
+        ctx.drawImage(shipImage, ship.x, ship.y, ship.width, ship.height);
+    }
+
+    function drawBullets() {
+        bullets.forEach(bullet => {
+            ctx.fillStyle = 'red';
+            ctx.fillRect(bullet.x, bullet.y, bullet.width, bullet.height);
+        });
+    }
+
+    function drawObstacles() {
+        obstacles.forEach(obstacle => {
+            ctx.drawImage(obstacleImage, obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        });
+    }
+
+    function moveLeft() {
+        if (ship.x > 0) {
+            ship.x -= ship.speed;
+        }
+    }
+
+    function moveRight() {
+        if (ship.x < canvas.width - ship.width) {
+            ship.x += ship.speed;
+        }
+    }
+
+    function shoot() {
+        const bulletWidth = 5;
+        const bulletHeight = 10;
+        const bullet1 = {
+            x: ship.x + 5,
+            y: ship.y,
+            width: bulletWidth,
+            height: bulletHeight,
+            speed: 7
+        };
+        const bullet2 = {
+            x: ship.x + ship.width - bulletWidth - 5,
+            y: ship.y,
+            width: bulletWidth,
+            height: bulletHeight,
+            speed: 7
+        };
+        bullets.push(bullet1, bullet2);
+    }
+
+    function updateBullets() {
+        bullets.forEach((bullet, index) => {
+            bullet.y -= bullet.speed;
+            if (bullet.y < 0) {
+                bullets.splice(index, 1);
+            }
+        });
+    }
+
+    function createObstacle() {
+        const obstacleWidth = 50;
+        const obstacleHeight = 50;
+        const obstacleX = Math.random() * (canvas.width - obstacleWidth);
+        const obstacle = {
+            x: obstacleX,
+            y: 0,
+            width: obstacleWidth,
+            height: obstacleHeight,
+            speed: obstacleSpeed
+        };
+        obstacles.push(obstacle);
+    }
+
+    function updateObstacles() {
+        obstacles.forEach((obstacle, index) => {
+            obstacle.y += obstacle.speed;
+            if (obstacle.y > canvas.height) {
+                obstacles.splice(index, 1);
+            }
+        });
+    }
+
+    function checkCollisions() {
+        obstacles.forEach((obstacle, obstacleIndex) => {
+            if (
+                ship.x < obstacle.x + obstacle.width &&
+                ship.x + ship.width > obstacle.x &&
+                ship.y < obstacle.y + obstacle.height &&
+                ship.y + ship.height > obstacle.y
+            ) {
+                gameOver = true;
+            }
+
+            bullets.forEach((bullet, bulletIndex) => {
+                if (
+                    bullet.x < obstacle.x + obstacle.width &&
+                    bullet.x + bullet.width > obstacle.x &&
+                    bullet.y < obstacle.y + obstacle.height &&
+                    bullet.y + bullet.height > obstacle.y
+                ) {
+                    obstacles.splice(obstacleIndex, 1);
+                    bullets.splice(bulletIndex, 1);
+                }
+            });
+        });
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        drawShip();
+        drawBullets();
+        drawObstacles();
+    }
+
+    function gameLoop() {
+        if (!gameOver) {
+            updateBullets();
+            updateObstacles();
+            checkCollisions();
+            draw();
+            requestAnimationFrame(gameLoop);
+        } else {
+            document.getElementById('gameOver').style.display = 'block';
+        }
+    }
+
+    function startGame() {
+        setInterval(createObstacle, 2000);
+        gameLoop();
+    }
+
+    function restartGame() {
+        document.getElementById('gameOver').style.display = 'none';
+        ship = {
+            x: canvas.width / 2 - shipWidth / 2,
+            y: canvas.height - shipHeight - 10,
+            width: shipWidth,
+            height: shipHeight,
+            speed: 5
+        };
+        bullets = [];
+        obstacles = [];
+        gameOver = false;
+        startGame();
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'ArrowLeft') {
+            moveLeft();
+        } else if (e.code === 'ArrowRight') {
+            moveRight();
+        } else if (e.code === 'Space') {
+            shoot();
+        }
+    });
+
+    startGame();
+    function beranda(){
+       window.location.href = "index.html";
+   }
+</script>
+
+</body>
+</html>

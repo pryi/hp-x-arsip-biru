@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Tetris</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #fff;
+            overflow: hidden; /* Menghilangkan scroll */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        canvas {
+            display: block;
+            background-color: #f4f4f4;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0px;
+            background-color: #fff;
+        }
+        .control-button {
+            width: 30px;
+            height: 30px;
+            font-size: 15px;
+            background-color: #555;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            outline: none;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen" id="gameScreen">
+        <canvas id="gameCanvas" width="200" height="400"></canvas>
+    </div>
+    <div class="controls">
+        <button class="control-button" id="leftButton">←</button>
+        <button class="control-button" id="rotateButton">↑</button>
+        <button class="control-button" id="rightButton">→</button>
+        <button class="control-button" id="downButton">↓</button>
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const ROWS = 20;
+        const COLS = 10;
+        const SQ = canvas.width / COLS; // ukuran kotak menyesuaikan dengan canvas
+        const VACANT = 'white'; // warna kosong
+        
+        const PIECES = [
+            [Z, 'red'],
+            [S, 'green'],
+            [T, 'yellow'],
+            [O, 'blue'],
+            [L, 'purple'],
+            [I, 'cyan'],
+            [J, 'orange']
+        ];
+        
+        let board = [];
+        for (let r = 0; r < ROWS; r++) {
+            board[r] = [];
+            for (let c = 0; c < COLS; c++) {
+                board[r][c] = VACANT;
+            }
+        }
+        
+        function drawSquare(x, y, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x * SQ, y * SQ, SQ, SQ);
+            ctx.strokeStyle = 'black';
+            ctx.strokeRect(x * SQ, y * SQ, SQ, SQ);
+        }
+        
+        function drawBoard() {
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    drawSquare(c, r, board[r][c]);
+                }
+            }
+        }
+        
+        class Piece {
+            constructor(tetromino, color) {
+                this.tetromino = tetromino;
+                this.color = color;
+                this.tetrominoN = 0;
+                this.activeTetromino = this.tetromino[this.tetrominoN];
+                this.x = 3;
+                this.y = -2;
+            }
+            
+            fill(color) {
+                for (let r = 0; r < this.activeTetromino.length; r++) {
+                    for (let c = 0; c < this.activeTetromino.length; c++) {
+                        if (this.activeTetromino[r][c]) {
+                            drawSquare(this.x + c, this.y + r, color);
+                        }
+                    }
+                }
+            }
+            
+            draw() {
+                this.fill(this.color);
+            }
+            
+            unDraw() {
+                this.fill(VACANT);
+            }
+            
+            moveDown() {
+                if (!this.collision(0, 1, this.activeTetromino)) {
+                    this.unDraw();
+                    this.y++;
+                    this.draw();
+                } else {
+                    this.lock();
+                    p = randomPiece();
+                }
+            }
+            
+            moveRight() {
+                if (!this.collision(1, 0, this.activeTetromino)) {
+                    this.unDraw();
+                    this.x++;
+                    this.draw();
+                }
+            }
+            
+            moveLeft() {
+                if (!this.collision(-1, 0, this.activeTetromino)) {
+                    this.unDraw();
+                    this.x--;
+                    this.draw();
+                }
+            }
+            
+            rotate() {
+                let nextPattern = this.tetromino[(this.tetrominoN + 1) % this.tetromino.length];
+                if (!this.collision(0, 0, nextPattern)) {
+                    this.unDraw();
+                    this.tetrominoN = (this.tetrominoN + 1) % this.tetromino.length;
+                    this.activeTetromino = nextPattern;
+                    this.draw();
+                }
+            }
+            
+            collision(x, y, piece) {
+                for (let r = 0; r < piece.length; r++) {
+                    for (let c = 0; c < piece.length; c++) {
+                        if (!piece[r][c]) continue;
+                        let newX = this.x + c + x;
+                        let newY = this.y + r + y;
+                        if (newX < 0 || newX >= COLS || newY >= ROWS) return true;
+                        if (newY < 0) continue;
+                        if (board[newY][newX] !== VACANT) return true;
+                    }
+                }
+                return false;
+            }
+            
+            lock() {
+                for (let r = 0; r < this.activeTetromino.length; r++) {
+                    for (let c = 0; c < this.activeTetromino.length; c++) {
+                        if (!this.activeTetromino[r][c]) continue;
+                        if (this.y + r < 0) {
+                            alert('Game Over');
+                            document.location.reload();
+                            return;
+                        }
+                        board[this.y + r][this.x + c] = this.color;
+                    }
+                }
+                for (let r = 0; r < ROWS; r++) {
+                    let isRowFull = true;
+                    for (let c = 0; c < COLS; c++) {
+                        isRowFull = isRowFull && (board[r][c] !== VACANT);
+                    }
+                    if (isRowFull) {
+                        for (let y = r; y > 1; y--) {
+                            for (let c = 0; c < COLS; c++) {
+                                board[y][c] = board[y - 1][c];
+                            }
+                        }
+                        for (let c = 0; c < COLS; c++) {
+                            board[0][c] = VACANT;
+                        }
+                    }
+                }
+                drawBoard();
+            }
+        }
+        
+        function randomPiece() {
+            let r = Math.floor(Math.random() * PIECES.length);
+            return new Piece(PIECES[r][0], PIECES[r][1]);
+        }
+        
+        let p = randomPiece();
+        
+        document.getElementById('leftButton').addEventListener('click', () => {
+            p.moveLeft();
+        });
+        
+        document.getElementById('rotateButton').addEventListener('click', () => {
+            p.rotate();
+        });
+        
+        document.getElementById('rightButton').addEventListener('click', () => {
+            p.moveRight();
+        });
+        
+        document.getElementById('downButton').addEventListener('click', () => {
+            p.moveDown();
+        });
+        
+        function drop() {
+            p.moveDown();
+            dropStart = Date.now();
+        }
+        
+        let dropStart = Date.now();
+        function update() {
+            let now = Date.now();
+            let delta = now - dropStart;
+            if (delta > 1000) {
+                drop();
+            }
+            requestAnimationFrame(update);
+        }
+        
+        drawBoard();
+        update();
+    });
+    
+    const Z = [
+        [
+            [1, 1, 0],
+            [0, 1, 1],
+            [0, 0, 0]
+        ],
+        [
+            [0, 0, 1],
+            [0, 1, 1],
+            [0, 1, 0]
+        ]
+    ];
+    
+    const S = [
+        [
+            [0, 1, 1],
+            [1, 1, 0],
+            [0, 0, 0]
+        ],
+        [
+            [0, 1, 0],
+            [0, 1, 1],
+            [0, 0, 1]
+        ]
+    ];
+    
+    const T = [
+        [
+            [0, 1, 0],
+            [1, 1, 1],
+            [0, 0, 0]
+        ],
+        [
+            [0, 1, 0],
+            [0, 1, 1],
+            [0, 1, 0]
+        ],
+        [
+            [0, 0, 0],
+            [1, 1, 1],
+            [0, 1, 0]
+        ],
+        [
+            [0, 1, 0],
+            [1, 1, 0],
+            [0, 1, 0]
+        ]
+    ];
+    
+    const O = [
+        [
+            [0, 0, 0],
+            [0, 1, 1],
+            [0, 1, 1]
+        ]
+    ];
+    
+    const L = [
+        [
+            [0, 0, 1],
+            [1, 1, 1],
+            [0, 0, 0]
+        ],
+        [
+            [0, 1, 0],
+            [0, 1, 0],
+            [0, 1, 1]
+        ],
+        [
+            [0, 0, 0],
+            [1, 1, 1],
+            [1, 0, 0]
+        ],
+        [
+            [1, 1, 0],
+            [0, 1, 0],
+            [0, 1, 0]
+        ]
+    ];
+    
+    const I = [
+        [
+            [0, 0, 0, 0],
+            [1, 1, 1, 1],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0]
+        ],
+        [
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0]
+        ]
+    ];
+    
+    const J = [
+        [
+            [1, 0, 0],
+            [1, 1, 1],
+            [0, 0, 0]
+        ],
+        [
+            [0, 1, 1],
+            [0, 1, 0],
+            [0, 1, 0]
+        ],
+        [
+            [0, 0, 0],
+            [1, 1, 1],
+            [0, 0, 1]
+        ],
+        [
+            [0, 1, 0],
+            [0, 1, 0],
+            [1, 1, 0]
+        ]
+    ];
+    function beranda(){
+       window.location.href = "index.html";
+   }
+</script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game XOX di HP</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        table {
+            border-collapse: collapse;
+            margin: 10px;
+        }
+        td {
+            width: 80px;
+            height: 80px;
+            text-align: center;
+            vertical-align: middle;
+            cursor: pointer;
+            border: 1px solid #3827f2;
+            transition: background-color 0.3s;
+        }
+        td.x img { background-color: #f0d9b5; }
+        td.o img { background-color: #b58863; }
+        td.win { background-color: #90EE90; }
+        td img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensure the image covers the cell without distortion */
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <table id="ticTacToeBoard"></table>
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+
+<script>
+    let currentPlayer = 'X';
+    const playerNames = {
+        'X': 'Nonomi',
+        'O': 'Hare'
+    };
+    const board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
+
+    function createTicTacToeBoard() {
+        const table = document.getElementById('ticTacToeBoard');
+        table.innerHTML = '';
+        for (let i = 0; i < 3; i++) {
+            const row = document.createElement('tr');
+            for (let j = 0; j < 3; j++) {
+                const cell = document.createElement('td');
+                if (board[i][j]) {
+                    const img = document.createElement('img');
+                    img.src = board[i][j] === 'X' ? 'img/n2.png' : 'img/h1.png';
+                    cell.appendChild(img);
+                }
+                cell.addEventListener('click', () => makeMove(i, j));
+                row.appendChild(cell);
+            }
+            table.appendChild(row);
+        }
+    }
+
+    function makeMove(row, col) {
+        if (board[row][col] === '') {
+            board[row][col] = currentPlayer;
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            createTicTacToeBoard();
+            const winner = checkWinner();
+            if (winner) {
+                highlightWinningCells(winner);
+                setTimeout(() => {
+                    alert(`${playerNames[board[winner[0][0]][winner[0][1]]]} winner!`);
+                    restartGame();
+                }, 100);
+            } else if (board.flat().every(cell => cell)) {
+                setTimeout(() => {
+                    alert('Ulangi!');
+                    restartGame();
+                }, 100);
+            }
+        }
+    }
+
+    function checkWinner() {
+        const winningCombinations = [
+            // Rows
+            [[0, 0], [0, 1], [0, 2]],
+            [[1, 0], [1, 1], [1, 2]],
+            [[2, 0], [2, 1], [2, 2]],
+            // Columns
+            [[0, 0], [1, 0], [2, 0]],
+            [[0, 1], [1, 1], [2, 1]],
+            [[0, 2], [1, 2], [2, 2]],
+            // Diagonals
+            [[0, 0], [1, 1], [2, 2]],
+            [[0, 2], [1, 1], [2, 0]]
+        ];
+
+        for (const combination of winningCombinations) {
+            const [a, b, c] = combination;
+            if (board[a[0]][a[1]] && board[a[0]][a[1]] === board[b[0]][b[1]] && board[a[0]][a[1]] === board[c[0]][c[1]]) {
+                return combination;
+            }
+        }
+        return null;
+    }
+
+    function highlightWinningCells(cells) {
+        for (const [row, col] of cells) {
+            const table = document.getElementById('ticTacToeBoard');
+            table.rows[row].cells[col].classList.add('win');
+        }
+    }
+
+    function restartGame() {
+        currentPlayer = 'X';
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                board[i][j] = '';
+            }
+        }
+        createTicTacToeBoard();
+    }
+
+    createTicTacToeBoard();
+    function beranda(){
+       window.location.href = "index.html";
+   }
+</script>
+
+</body>
+</html>

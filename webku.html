@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webku</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #000000;
+            color: white;
+            padding: 10px;
+        }
+        .menu-button {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .menu {
+            display: none;
+            flex-direction: column;
+            background-color: #000000;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a:hover {
+            background-color: #dc222e;
+        }
+        .img-slide {
+            width: 100%;
+            height: calc(50% - 40px);
+            position: relative;
+            overflow: hidden;
+        }
+        .slides {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+        .slide {
+            width: 33.333%;
+            height: 100%;
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .prev, .next {
+            cursor: pointer;
+            position: absolute;
+            top: 50%;
+            width: auto;
+            margin-top: -22px;
+            padding: 16px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            transition: 0.6s ease;
+            border-radius: 0 3px 3px 0;
+            user-select: none;
+        }
+        .next {
+            right: 0;
+            border-radius: 3px 0 0 3px;
+        }
+        .prev:hover, .next:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
+        }
+        .card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .card-content {
+            flex: 1;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <div class="navbar">
+            <span class="menu-button" onclick="toggleMenu()">☰ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WEBKU</span>
+        </div>
+        <div class="menu" id="menu">
+            <a href="webku.html">Home</a>
+            <a href="galery.html">Gelery</a>
+            <a href="login.html">Login</a>
+        </div>
+        <center><h2>Selamat Datang</h2></center>
+        <div class="img-slide">
+            <div class="slides active">
+                <div class="slide">
+                    <img src="img/g1.jpg" alt="Slide 1">
+                </div>
+                <div class="slide">
+                    <img src="img/g1.jpg" alt="Slide 2">
+                </div>
+                <div class="slide">
+                    <img src="img/g1.jpg" alt="Slide 3">
+                </div>
+            </div>
+            <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+            <a class="next" onclick="changeSlide(1)">&#10095;</a>
+        </div>
+        <div class="card">
+            <img src="img/w1.jpg" alt="User" />
+            <div class="card-content">
+                <h3>Nonomi</h3>
+                <p>Description of the user</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="img/w5.jpeg" alt="User" />
+            <div class="card-content">
+                <h3>Shiroko</h3>
+                <p>Description of the user</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="img/w6.jpeg" alt="User" />
+            <div class="card-content">
+                <h3>Ayane</h3>
+                <p>Description of the user</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="img/w7.jpeg" alt="User" />
+            <div class="card-content">
+                <h3>Serika</h3>
+                <p>Description of the user</p>
+            </div>
+        </div>
+        <div class="card">
+            <img src="img/w8.jpeg" alt="User" />
+            <div class="card-content">
+                <h3>Hoshino</h3>
+                <p>Description of the user</p>
+            </div>
+        </div>
+        <div class="navigation">
+            <div class="nav-button" onclick="beranda()">⬤</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("menu");
+        if (menu.style.display === "none" || menu.style.display === "") {
+            menu.style.display = "flex";
+        } else {
+            menu.style.display = "none";
+        }
+    }
+
+    let slideIndex = 0;
+    const totalSlides = 3;
+
+    function showSlide(index) {
+        let slides = document.getElementsByClassName("slides")[0];
+        slides.style.transform = "translateX(-" + (index * 100 / totalSlides) + "%)";
+    }
+
+    function changeSlide(n) {
+        slideIndex += n;
+        if (slideIndex >= totalSlides) {
+            slideIndex = totalSlides - 1;
+        } else if (slideIndex < 0) {
+            slideIndex = 0;
+        }
+        showSlide(slideIndex);
+    }
+
+    // Initial display of the first slide
+    showSlide(slideIndex);
+</script>
+<script>
+    function beranda(){
+       window.location.href = "index.html";
+   }
+   </script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webku</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #fff;
+            background-image: url('img/w1.jpg');
+            background-size: cover;
+            background-position: center;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+            padding: 10px;
+        }
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .search-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .search-bar {
+            width: 80%;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .search-button {
+            padding: 10px;
+            font-size: 1rem;
+            border: none;
+            background-color: #181a1d;
+            color: #fff;
+            border-radius: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        .clock {
+            font-size: 3rem;
+            text-align: center;
+            color: #333;
+        }
+        .app-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .app-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            width: 70px; /* Adjust width to fit 3 apps per row */
+        }
+        .app-card img {
+            width: 50px; /* Adjust width to be smaller */
+            height: 50px; /* Adjust height to be smaller */
+            border-radius: 10px;
+            margin-bottom: 5px;
+        }
+        .app-card .app-title {
+            font-size: 0.7rem; /* Adjust font size to be smaller */
+            text-align: center;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <form class="search-container" action="https://www.google.com/search" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search Google...">
+            <button type="submit" class="search-button">Cari</button>
+        </form>
+        &nbsp;
+        <div class="clock" id="clock"></div>
+       <center> <div class="date" id="date"></div></center>
+        &nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="app-row">
+            <a href="https://chatgpt.com" class="app-card">
+                <img src="img/apk6.png" alt="App Icon">
+                <div class="app-title">Chat Gpt</div>
+            </a>
+            <a href="kalkulator.html" class="app-card">
+                <img src="img/apk2.png" alt="App Icon">
+                <div class="app-title">Kalkulator</div>
+            </a>
+            <a href="https://Youtube.com" class="app-card">
+                <img src="img/apk3.jpeg" alt="App Icon">
+                <div class="app-title">Youtube</div>
+            </a>
+        </div>
+        <div class="app-row">
+            <a href="https://pryi.github.io/arsip/" class="app-card">
+                <img src="img/apk4.png" alt="App Icon">
+                <div class="app-title">Apk 1</div>
+            </a>
+            <a href="https://pryi.github.io/Astonprinter/" class="app-card">
+                <img src="img/apk4.png" alt="App Icon">
+                <div class="app-title">Apk 2</div>
+            </a>
+            <a href="webku.html" class="app-card">
+                <img src="img/apk4.png" alt="App Icon">
+                <div class="app-title">Apk 3</div>
+            </a>
+        </div>
+          <div class="app-row">
+            <a href="game1.html" class="app-card">
+                <img src="img/apk5.png" alt="App Icon">
+                <div class="app-title">Game 1</div>
+            </a>
+            <a href="game2.html" class="app-card">
+                <img src="img/apk5.png" alt="App Icon">
+                <div class="app-title">Game 2</div>
+            </a>
+            <a href="game3.html" class="app-card">
+                <img src="img/apk5.png" alt="App Icon">
+                <div class="app-title">Game 3</div>
+            </a>
+        </div>
+        <div class="app-row">
+            <a href="game4.html" class="app-card">
+                <img src="img/apk5.png" alt="App Icon">
+                <div class="app-title">Game 4</div>
+            </a>
+            <a href="game5.html" class="app-card">
+                <img src="img/apk5.png" alt="App Icon">
+                <div class="app-title">Game 5</div>
+            </a>
+            <a href="game6.html" class="app-card">
+                <img src="img/apk5.png" alt="App Icon">
+                <div class="app-title">Game 6</div>
+            </a>
+        </div>
+        <!-- Add more app rows as needed -->
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+<script>
+     function showTime() {
+    var date = new Date();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+
+    var day = date.getDate();
+    var month = date.getMonth() + 1; // Bulan dimulai dari 0, sehingga perlu ditambahkan 1
+    var year = date.getFullYear();
+
+    hours = (hours < 10) ? "0" + hours : hours;
+    minutes = (minutes < 10) ? "0" + minutes : minutes;
+
+    var time = hours + ":" + minutes;
+
+    var fullDate = day + "/" + month + "/" + year;
+
+    document.getElementById("clock").innerText = time;
+    document.getElementById("date").innerText = fullDate;
+
+    setTimeout(showTime, 1000);
+}
+
+window.onload = function() {
+    showTime();
+};
+
+</script>
+
+</body>
+</html>

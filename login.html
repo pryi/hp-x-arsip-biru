@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webku</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .screen {
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #000000;
+            color: white;
+            padding: 10px;
+        }
+        .menu-button {
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+        .menu {
+            display: none;
+            flex-direction: column;
+            background-color: #000000;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px;
+            text-align: center;
+        }
+        .menu a:hover {
+            background-color: #dc222e;
+        }
+        form {
+        margin: 40px auto;
+        width: 200px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+    input[type="text"],
+    input[type="password"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+    }
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #272def;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    input[type="submit"]:hover {
+        background-color: #e9302a;
+    }
+    /* Media queries untuk responsivitas */
+    @media screen and (max-width: 600px) {
+        form {
+            width: 90%; /* Menggunakan 90% lebar pada layar kecil */
+        }
+    }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <div class="navbar">
+            <span class="menu-button" onclick="toggleMenu()">☰ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;WEBKU</span>
+        </div>
+        <div class="menu" id="menu">
+            <a href="webku.html">Home</a>
+            <a href="galery.html">Gelery</a>
+            <a href="login.html">Login</a>
+        </div>
+        <div><form id="loginForm">
+            <h2>Login</h2>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <p id="registerLink">Belum punya akun? <a href="#" onclick="toggleRegisterForm()">Daftar sekarang</a></p>
+            <input type="submit" value="Login">
+        </form>
+        
+        <form id="registerForm" style="display:none;">
+            <h2>Registrasi</h2>
+            <label for="newUsername">Username:</label>
+            <input type="text" id="newUsername" name="newUsername" required>
+            <label for="newPassword">Password:</label>
+            <input type="password" id="newPassword" name="newPassword" required>
+            <input type="submit" value="Registrasi">
+        </form></div>
+        <div class="navigation">
+            <div class="nav-button" onclick="beranda()">⬤</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("menu");
+        if (menu.style.display === "none" || menu.style.display === "") {
+            menu.style.display = "flex";
+        } else {
+            menu.style.display = "none";
+        }
+    }
+    document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+    
+    // Memeriksa apakah data login cocok dengan data pendaftaran yang tersimpan
+    var registeredUsername = localStorage.getItem("registeredUsername");
+    var registeredPassword = localStorage.getItem("registeredPassword");
+    
+    if (username === registeredUsername && password === registeredPassword) {
+        // Jika login berhasil, arahkan ke halaman dashboard
+        window.location.href = "webku.html";
+    } else {
+        // Jika login gagal, tampilkan pesan error
+        alert("Login gagal. Username atau password salah.");
+    }
+});
+
+document.getElementById("registerForm").addEventListener("submit", function(event) {
+    event.preventDefault();
+    var newUsername = document.getElementById("newUsername").value;
+    var newPassword = document.getElementById("newPassword").value;
+    
+    // Simpan data pendaftaran ke penyimpanan lokal browser
+    localStorage.setItem("registeredUsername", newUsername);
+    localStorage.setItem("registeredPassword", newPassword);
+    
+    alert("Registrasi berhasil untuk username: " + newUsername + ", password: " + newPassword);
+    
+    // Setelah registrasi berhasil, arahkan pengguna kembali ke halaman login
+    toggleRegisterForm(); // Sembunyikan formulir pendaftaran
+});
+  
+function toggleRegisterForm() {
+    var registerForm = document.getElementById("registerForm");
+    var registerLink = document.getElementById("registerLink");
+    if (registerForm.style.display === "none") {
+        registerForm.style.display = "block";
+        registerLink.style.display = "none";
+    } else {
+        registerForm.style.display = "none";
+        registerLink.style.display = "block";
+    }
+}
+</script>
+<script>
+    function beranda(){
+       window.location.href = "index.html";
+   }
+   </script>
+</body>
+</html>

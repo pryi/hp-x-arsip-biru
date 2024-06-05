@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Nata Bata</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #fff;
+            overflow: hidden; /* Menghilangkan scroll */
+            padding: 10px;
+        }
+        canvas {
+            display: block;
+            margin: auto;
+            background-color: #1a1919;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px;
+            background-color: #fff;
+        }
+        .control-button {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            outline: none;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen" id="gameScreen">
+        <canvas id="gameCanvas" width="240" height="320"></canvas>
+    </div>
+    <div class="controls">
+        <button class="control-button" id="leftButton">←</button>
+        <button class="control-button" id="rightButton">→</button>
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Ukuran layar game
+        const screenWidth = canvas.width;
+        const screenHeight = canvas.height;
+
+        // Ukuran dan posisi paddle
+        const paddleWidth = 60;
+        const paddleHeight = 10;
+        let paddleX;
+        const paddleY = screenHeight - paddleHeight;
+
+        // Ukuran dan posisi bola
+        const ballRadius = 5;
+        let ballX;
+        let ballY;
+        let ballSpeedX;
+        let ballSpeedY;
+
+        // Ukuran dan posisi batu-bata
+        const brickRowCount = 5;
+        const brickColumnCount = 3;
+        const brickWidth = 50;
+        const brickHeight = 20;
+        const brickPadding = 10;
+        const brickOffsetTop = 30;
+        const brickOffsetLeft = 30;
+        let bricks = [];
+
+        function initializeBricks() {
+            bricks = [];
+            for (let c = 0; c < brickColumnCount; c++) {
+                bricks[c] = [];
+                for (let r = 0; r < brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1 };
+                }
+            }
+        }
+
+        // Fungsi untuk mereset permainan
+        function resetGame() {
+            paddleX = (screenWidth - paddleWidth) / 2;
+            ballX = screenWidth / 2;
+            ballY = screenHeight - 30;
+            ballSpeedX = 2;
+            ballSpeedY = -2;
+            initializeBricks();
+        }
+
+        // Tombol navigasi
+        document.getElementById('leftButton').addEventListener('click', () => {
+            if (paddleX > 0) {
+                paddleX -= 20;
+            }
+        });
+
+        document.getElementById('rightButton').addEventListener('click', () => {
+            if (paddleX < screenWidth - paddleWidth) {
+                paddleX += 20;
+            }
+        });
+
+        // Fungsi untuk menggambar paddle
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, paddleY, paddleWidth, paddleHeight);
+            ctx.fillStyle = '#0095DD';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Fungsi untuk menggambar bola
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0095DD';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Fungsi untuk menggambar batu-bata
+        function drawBricks() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    if (bricks[c][r].status === 1) {
+                        let brickX = (c * (brickWidth + brickPadding)) + brickOffsetLeft;
+                        let brickY = (r * (brickHeight + brickPadding)) + brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = '#0095DD';
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+
+        // Fungsi untuk mendeteksi tumbukan
+        function collisionDetection() {
+            for (let c = 0; c < brickColumnCount; c++) {
+                for (let r = 0; r < brickRowCount; r++) {
+                    let b = bricks[c][r];
+                    if (b.status === 1) {
+                        if (ballX > b.x && ballX < b.x + brickWidth && ballY > b.y && ballY < b.y + brickHeight) {
+                            ballSpeedY = -ballSpeedY;
+                            b.status = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+        // Fungsi untuk menggambar layar permainan
+        function draw() {
+            ctx.clearRect(0, 0, screenWidth, screenHeight);
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            collisionDetection();
+
+            // Kalkulasi posisi bola berikutnya
+            ballX += ballSpeedX;
+            ballY += ballSpeedY;
+
+            // Mengubah arah bola jika menyentuh dinding horizontal
+            if (ballX + ballSpeedX < ballRadius || ballX + ballSpeedX > screenWidth - ballRadius) {
+                ballSpeedX = -ballSpeedX;
+            }
+
+            // Mengubah arah bola jika menyentuh dinding vertikal
+            if (ballY + ballSpeedY < ballRadius) {
+                ballSpeedY = -ballSpeedY;
+            } else if (ballY + ballSpeedY > screenHeight - ballRadius) {
+                if (ballX > paddleX && ballX < paddleX + paddleWidth) {
+                    ballSpeedY = -ballSpeedY;
+                } else {
+                    resetGame();
+                }
+            }
+        }
+
+        resetGame();
+        setInterval(draw, 10); // Memperbarui layar permainan setiap 10 milidetik
+    });
+    function beranda(){
+       window.location.href = "index.html";
+   }
+</script>
+
+</body>
+</html>

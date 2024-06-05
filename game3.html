@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game di HP Nokia</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        .phone {
+            width: 270px;
+            height: 480px;
+            background-color: #000;
+            border: 16px solid #333;
+            border-top-width: 60px;
+            border-bottom-width: 60px;
+            border-radius: 36px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .screen {
+            flex-grow: 1;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        canvas {
+            background-color: #000;
+            border: 1px solid #333;
+        }
+        .navigation1 {
+            height: 50px;
+            background-color: #000000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button1 {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        .navigation {
+            height: 50px;
+            background-color: #626161;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: sticky;
+            bottom: 0;
+            width: 100%;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+            margin-top: auto;
+        }
+        .nav-button {
+            width: 40px;
+            height: 40px;
+            background-color: #555;
+            border-radius: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="phone">
+    <div class="screen">
+        <canvas id="gameCanvas" width="240" height="240"></canvas>
+        <div id="gameOver">
+            <h2>Game Over</h2>
+            <button onclick="restartGame()">Restart</button>
+        </div>
+    </div>
+    <div class="navigation1">
+        <div class="nav-button1" onclick="moveLeft()">⬅️</div>
+        <div class="nav-button1" onclick="moveUp()">⬆️</div>
+        <div class="nav-button1" onclick="moveDown()">⬇️</div>
+        <div class="nav-button1" onclick="moveRight()">➡️</div>
+    </div>
+    <div class="navigation">
+        <div class="nav-button" onclick="beranda()">⬤</div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const gridSize = 20;
+    const tileSize = canvas.width / gridSize;
+    let snake = [{x: 10, y: 10}];
+    let direction = {x: 0, y: 0};
+    let food = {x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize)};
+    let gameOver = false;
+    const snakeHeadImg = new Image();
+    snakeHeadImg.src = 'img/m1.png';  // Ganti dengan path gambar kepala ular Anda
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw snake
+        snake.forEach((part, index) => {
+            if (index === 0) {
+                ctx.drawImage(snakeHeadImg, part.x * tileSize, part.y * tileSize, tileSize, tileSize);
+            } else {
+                ctx.fillStyle = index % 2 === 0 ? 'orange' : 'lightorange';  // Alternating colors
+                ctx.fillRect(part.x * tileSize, part.y * tileSize, tileSize, tileSize);
+            }
+        });
+
+        // Draw food
+        ctx.fillStyle = 'red';
+        ctx.fillRect(food.x * tileSize, food.y * tileSize, tileSize, tileSize);
+    }
+
+    function update() {
+        if (!gameOver) {
+            const head = {x: snake[0].x + direction.x, y: snake[0].y + direction.y};
+
+            // Warp-around the snake if it goes out of canvas boundaries
+            if (head.x < 0) head.x = gridSize - 1;
+            if (head.x >= gridSize) head.x = 0;
+            if (head.y < 0) head.y = gridSize - 1;
+            if (head.y >= gridSize) head.y = 0;
+
+            // Check collision with self
+            for (let i = 1; i < snake.length; i++) {
+                if (head.x === snake[i].x && head.y === snake[i].y) {
+                    gameOver = true;
+                }
+            }
+
+            if (!gameOver) {
+                snake.unshift(head);
+
+                // Check if snake eats the food
+                if (head.x === food.x && head.y === food.y) {
+                    food = {x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize)};
+                } else {
+                    snake.pop();
+                }
+            }
+
+            draw();
+        } else {
+            document.getElementById('gameOver').style.display = 'block';
+        }
+    }
+
+    function moveUp() {
+        if (direction.y === 0) {
+            direction = {x: 0, y: -1};
+        }
+    }
+
+    function moveLeft() {
+        if (direction.x === 0) {
+            direction = {x: -1, y: 0};
+        }
+    }
+
+    function moveDown() {
+        if (direction.y === 0) {
+            direction = {x: 0, y: 1};
+        }
+    }
+
+    function moveRight() {
+        if (direction.x === 0) {
+            direction = {x: 1, y: 0};
+        }
+    }
+
+    function restartGame() {
+        document.getElementById('gameOver').style.display = 'none';
+        snake = [{x: 10, y: 10}];
+        direction = {x: 0, y: 0};
+        food = {x: Math.floor(Math.random() * gridSize), y: Math.floor(Math.random() * gridSize)};
+        gameOver = false;
+        draw();
+    }
+
+    window.addEventListener('keydown', (e) => {
+        if (e.code === 'ArrowUp') {
+            moveUp();
+        } else if (e.code === 'ArrowLeft') {
+            moveLeft();
+        } else if (e.code === 'ArrowDown') {
+            moveDown();
+        } else if (e.code === 'ArrowRight') {
+            moveRight();
+        }
+    });
+
+    setInterval(update, 150);
+    draw();
+    function beranda(){
+       window.location.href = "index.html";
+   }
+</script>
+
+</body>
+</html>
